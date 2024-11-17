@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل الشموع اليابانية</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="notification" id="notification">
+        <span id="notification-text"></span>
+        <button class="close-btn">×</button>
+    </div>
+
+    <header>
+        <h1>تحليل الشموع اليابانية للعملات الرقمية</h1>
+    </header>
+
+    <main>
+        <section class="filters">
+            <div class="filters-container">
+                <h2>تحديد شروط التحليل</h2>
+                <form id="filters-form">
+                    <div class="filter-group">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="enable-lower-tail" name="enable-lower-tail">
+                            <label for="enable-lower-tail">تفعيل شرط الذيل السفلي</label>
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="lower-tail">نسبة ذيل الشمعة السفلي:</label>
+                            <input type="number" id="lower-tail" name="lower-tail" min="0" max="100" step="1" placeholder="0-100">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="enable-upper-tail" name="enable-upper-tail">
+                            <label for="enable-upper-tail">تفعيل شرط الذيل العلوي</label>
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="upper-tail">نسبة ذيل الشمعة العلوي:</label>
+                            <input type="number" id="upper-tail" name="upper-tail" min="0" max="100" step="1" placeholder="0-100">
+                        </div>
+                    </div>
+
+                    <div class="auto-analysis">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="enable-auto-refresh" name="enable-auto-refresh">
+                            <label for="enable-auto-refresh">تفعيل التحليل التلقائي</label>
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="refresh-interval">الفاصل الزمني (ثواني):</label>
+                            <input type="number" id="refresh-interval" min="5" value="30">
+                        </div>
+                    </div>
+
+                    <div class="notification-settings">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="enable-notifications" name="enable-notifications">
+                            <label for="enable-notifications">تفعيل التنبيهات الصوتية</label>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="primary-btn">تطبيق الفلاتر</button>
+                        <button type="button" id="stop-analysis" class="secondary-btn" disabled>إيقاف التحليل</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="currency-list">
+            <h2>العملات المتوافقة مع الشروط</h2>
+            <div class="table-container">
+                <table id="currency-table">
+                    <thead>
+                        <tr>
+                            <th>اسم العملة</th>
+                            <th>السعر اللحظي</th>
+                            <th>نسبة التداول</th>
+                            <th>زمن تحقق الشمعة</th>
+                            <th>التوصية</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- سيتم ملء البيانات هنا بواسطة JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="chart-section">
+            <h2>الرسم البياني للعملة</h2>
+            <canvas id="currency-chart"></canvas>
+        </section>
+    </main>
+
+    <!-- Modal for Targets -->
+    <div id="targets-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>تحليل وأهداف العملة <span id="modal-symbol"></span></h2>
+            <div class="modal-body">
+                <div class="targets-section">
+                    <h3>🎯 الأهداف المتوقعة</h3>
+                    <div class="targets-list">
+                        <div class="target">
+                            <span class="target-label">الهدف الأول</span>
+                            <span id="target1" class="target-value"></span>
+                        </div>
+                        <div class="target">
+                            <span class="target-label">الهدف الثاني</span>
+                            <span id="target2" class="target-value"></span>
+                        </div>
+                        <div class="target">
+                            <span class="target-label">الهدف الثالث</span>
+                            <span id="target3" class="target-value"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stop-loss-section">
+                    <h3>⚠️ مستوى إيقاف الخسارة</h3>
+                    <span id="stop-loss"></span>
+                </div>
+                <div class="stats-section">
+                    <h3>📊 إحصائيات العملة</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">حجم التداول (24س)</span>
+                            <span id="volume-24h"></span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">التغير (24س)</span>
+                            <span id="change-24h"></span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">أعلى سعر</span>
+                            <span id="high-24h"></span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">أدنى سعر</span>
+                            <span id="low-24h"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 السيد خالد دراغة</p>
+    </footer>
+</body>
+</html>
